@@ -24,9 +24,86 @@ I am a junior data analyst working in the marketing analyst team at Cyclistic, a
 ●	Cyclistic executive team: The notoriously detail-oriented executive team will decide whether to approve the recommended marketing program. 
 
 ## ASK -> Business Task
+
 Identify how does causal users use cyclistics bike differently from Annual members so that proper advertisement and marketing plans can be made to convert casual members to Annual Members. 
 
-## Prepare
+## PREPARE
 
-I will use Cyclistic’s historical trip data to analyze and identify trends.  Downloaded 12 months of Cyclistic trip data from here->https://divvy-tripdata.s3.amazonaws.com/index.html (Note: The datasets have a diﬀerent name because Cyclistic is a ﬁctional company. For the purposes  of this case study, the datasets are appropriate  and will enable  you to answer the business  questions. The data has been made available by Motivate International  Inc. under this  license.) This is public data that you can use to explore how diﬀerent customer types are using Cyclistic bikes. But note that data-privacy issues prohibit you from using riders’ personally identiﬁable information.  This means  that you won’t be able to connect  pass purchases to credit card numbers  to determine if casual riders live in the Cyclistic service area or if they have purchased  multiple single passes.
+I will use Cyclistic’s historical trip data to analyze and identify trends.  Downloaded 12 months of Cyclistic trip data from here [CLICK HERE](https://divvy-tripdata.s3.amazonaws.com/index.html) (Note: The datasets have a diﬀerent name because Cyclistic is a ﬁctional company. For the purposes  of this case study, the datasets are appropriate  and will enable  you to answer the business  questions. The data has been made available by Motivate International  Inc. under this  license.) This is public data that you can use to explore how diﬀerent customer types are using Cyclistic bikes. But note that data-privacy issues prohibit you from using riders’ personally identiﬁable information.  This means  that you won’t be able to connect  pass purchases to credit card numbers  to determine if casual riders live in the Cyclistic service area or if they have purchased  multiple single passes.
 
+## PROCESS
+
+I have downloaded 12 months data file from jan 2022 to Dec 2022 into .csv format.Since this data has many records, i have used MYSQL workbench for further data merging and data cleaning Process.
+
+-- creating table to load csv data for each month into different tables
+```
+CREATE TABLE jan (
+		ride_id varchar(255),
+		rideable_type varchar(255),
+		started_at datetime,
+		ended_at datetime,
+		start_station_name varchar(255) default NULL,
+		start_station_id double default NULL,
+		end_station_name varchar(255) default NULL,
+		end_station_id double default NULL,
+		start_lat float default NULL,
+		start_lng float default NULL,
+		end_lat float default NULL,
+		end_lng float default NULL,
+		member_casual varchar(255)
+) ;
+```
+importing csv file into newly created table for each month(Query shown for Only 1 table)
+```
+LOAD DATA LOCAL INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/202212-divvy-tripdata.csv'
+INTO TABLE jan
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+```
+creating table(trip_data) to load all months data in it
+```
+CREATE TABLE trip_data (
+		ride_id varchar(255),
+		rideable_type varchar(255),
+		started_at datetime,
+		ended_at datetime,
+		start_station_name varchar(255) default NULL,
+		start_station_id double default NULL,
+		end_station_name varchar(255) default NULL,
+		end_station_id double default NULL,
+		start_lat float default NULL,
+		start_lng float default NULL,
+		end_lat float default NULL,
+		end_lng float default NULL,
+		member_casual varchar(255)
+) 
+```
+merging all 12 months table in 1 single table named as trip_data
+```
+INSERT INTO trip_data
+	SELECT * FROM jan
+		UNION ALL
+	SELECT * FROM feb
+    UNION ALL
+	SELECT * FROM mar
+		UNION ALL
+	SELECT * FROM aprl
+    UNION ALL
+	SELECT * FROM may
+		UNION ALL
+	SELECT * FROM jun
+    UNION ALL
+	SELECT * FROM jul
+		UNION ALL
+	SELECT * FROM aug
+    UNION ALL
+	SELECT * FROM sep
+		UNION ALL
+	SELECT * FROM oct
+    UNION ALL
+	SELECT * FROM nov
+		UNION ALL
+	SELECT * FROM dece;
+```
